@@ -28,3 +28,26 @@ scores |>
 scores |>
   filter(grade == 5) |>
   select(student_id, gain)
+
+#6. group_by() + summarise(): summary for each group
+scores|>
+  group_by(gets_support) |>          #split students into two groups
+  summarise(
+    n=n(),                           #number of students in each group
+    n_missing=sum(is.na(gain)),      #how many gains are missing
+    mean_pre=mean(pre_score),        #mean pre-test score
+    mean_gain=mean(gain, na.rm=TRUE) #mean gain, skipping missing values
+  ) |>
+  print(width=Inf)                   #show every column however wide
+ 
+#7. Save the cleaned data as a new CSV file
+write_csv(scores, "data/reading_scores_clean.csv")
+
+# Pratice: man gain by grade
+scores|>
+  group_by(grade) |>
+  summarise(
+    n=n(),
+    n_missing=sum(is.na(gain)),
+    mean_gain=mean(gain, na.rm=TRUE)
+  )
