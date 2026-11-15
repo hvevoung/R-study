@@ -1,0 +1,58 @@
+---
+title: "01_descriptive_statistics"
+author: Hyeyoung
+date: 2026-11-15
+format: 
+  html:
+    embed-resources: true
+---
+
+##Purpose
+
+This report summarizes simulated reading fluency scores of 12 students before and after a reading intervention. All data are made up for practice. 
+
+##Load data
+```{r}
+library(tidyverse)   #load tidyverse
+scores <- read_csv("../data/reading_scores_clean.csv")    #".." means one folder up 
+```
+
+##Center and spread of pre-test scores
+```{r}
+scores|>
+  summarize(
+    n=n(),
+    mean_pre=mean(pre_score),
+    median_pre=median(pre_score),
+    sd_pre=sd(pre_score),
+    min_pre=min(pre_score),
+    max_pre=max(pre_score)
+  )
+```
+
+##Frequency Tables
+```{r}
+scores |> count(grade)             #number of students in each grade
+scores |> count(gets_support)      #number of students with and without support
+```
+
+##Scores by support group
+```{r}
+scores |>
+  group_by(gets_support) |>                 #split into two groups
+  summarize(
+    n=n(),                                 #number of students
+    mean_pre=mean(pre_score),             #mean pre_test score
+    sd_pre=sd(pre_score),                 #spread of pre_test scores
+  mean_post=mean(post_score, na.rm=TRUE), #mean post-test score, skipping missing
+  sd_post=sd(post_score, na.rm=TRUE)      #spread of post-test scores, skipping missing
+  )
+```
+
+##Interpretation
+
+The mean pre_test score of all students was 39.7 and the median was 39. This indicates the scores were not stronly skewed. However, the sd was 13.4 and moreover, the scores ranged from 22 to 60, showing big differences between students.
+
+For each group, the mean pre-test score was 51.8 for the non-support group and 27.5 for the support group, a gap of approximately 24 points. The mean post-test score was 55 for the non-support group and 36 for the support group, so the gap decreased to 19 points. Note that 2 of the 6 students in the support group had no post-test score, thus only 4 students were included in the group's post-test mean. 
+
+However, these results alone cannot show that the support was effective. Because the post-test mean of the support group was based on only 4 students, the result may be unstable. Also, the support group started with much lower pre-test scores, so they had more room to improve. 
